@@ -99,7 +99,7 @@
 
 @layer utilities {
   .gradient{
-    @apply bg-gradient-to-br from-blue-600 to-purple-600;
+    @apply bg-green-600;
   }
 
   .gradient-title {
