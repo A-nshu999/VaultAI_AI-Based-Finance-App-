@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Welth",
+  title: "Vault AI",
   description: "One Stop Financial Platform",
 };
 
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         {/*footer*/}
         <footer className="bg-green-100 py-12">
   <div className="container mx-auto px-4 text-center text-gray-600">
-    <p>© 2025 Welth. All rights reserved.</p>
+    <p>© 2025 Vault AI. All rights reserved.</p>
     <p className="text-xs text-gray-400 mt-2"><i>Made by Divyanshu and Divyansh </i></p>
   </div>
 </footer>

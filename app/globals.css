@@ -120,3 +120,19 @@
 .hero-image.scrolled {
   transform: rotate(0deg) scale(1) translateY(40px);
 }
+
+
+/* ===== Custom Hover Glow Utilities ===== */
+
+.hover-glow-green:hover {
+  box-shadow: 0px 6px 15px -2px rgba(0, 255, 0, 0.45);
+}
+
+.hover-glow-blue:hover {
+  box-shadow: 0px 6px 15px -2px rgba(0, 128, 255, 0.45);
+}
+
+.hover-glow-purple:hover {
+  box-shadow: 0px 6px 15px -2px rgba(160, 32, 240, 0.45);
+}
+

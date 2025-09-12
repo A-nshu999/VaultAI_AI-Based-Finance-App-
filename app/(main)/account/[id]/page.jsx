@@ -1,10 +1,11 @@
-
+import { format } from "date-fns";
 import { getAccountWithTransactions } from "@/actions/account";
 import React from "react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import TransactionTable from "./_components/transaction-table";
 import { BarLoader } from "react-spinners";
+import AccountChart from "../../dashboard/_components/account-chart";
 
 const AccountsPage = async ({ params }) => {
     const accountData = await getAccountWithTransactions(params.id);
@@ -38,11 +39,16 @@ const AccountsPage = async ({ params }) => {
         </div>
 
         {/* Chart Section */}
+        <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333EA" />}
+        >
+            <AccountChart transactions = {transactions}/>
+        </Suspense>
 
         {/* Transaction Table */}
         <Suspense fallback={<BarLoader className="mt-4" width={"100%"} color="#4A5568" />}
         >
-        <TransactionTable transactions={transactions ?? []} />
+        <TransactionTable transactions = {transactions} />
         </Suspense>
     </div>
 );

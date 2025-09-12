@@ -1,0 +1,169 @@
+"use client";
+
+import React, { useMemo } from "react";
+import { format } from "date-fns";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ResponsiveContainer,
+  BarChart, Bar,
+  LineChart, Line,
+  AreaChart, Area,
+  PieChart, Pie, Cell,
+  CartesianGrid, XAxis, YAxis, Tooltip, Legend
+} from "recharts";
+
+const colors = {
+  income: "#16a34a",   // green
+  expense: "#ef4444",  // red
+  net: "#3b82f6",      // blue
+  accent: "#8b5cf6"    // purple-ish
+};
+
+export default function AccountCharts({ transactions = [] }) {
+  // prepare -> group by day key (YYYY-MM-DD), compute income/expense per day and running balance
+  const prepared = useMemo(() => {
+    // make sure amounts are numbers and dates are Date objects
+    const tx = (transactions || []).map((t) => ({
+      ...t,
+      amount: typeof t.amount === "number" ? t.amount : Number(t.amount || 0),
+      dateObj: new Date(t.date)
+    }));
+
+    const map = new Map();
+    tx.forEach((t) => {
+      const key = t.dateObj.toISOString().slice(0, 10); // YYYY-MM-DD for sorting
+      const label = format(t.dateObj, "MMM dd");
+      if (!map.has(key)) map.set(key, { key, dateLabel: label, income: 0, expense: 0 });
+      const entry = map.get(key);
+      if (t.type === "INCOME") entry.income += t.amount;
+      else entry.expense += t.amount;
+    });
+
+    const arr = Array.from(map.values()).sort((a, b) => new Date(a.key) - new Date(b.key));
+
+    // compute running balance and net per day
+    let running = 0;
+    arr.forEach((e) => {
+      const net = (e.income || 0) - (e.expense || 0);
+      running += net;
+      e.net = net;
+      e.balance = running;
+    });
+
+    return arr;
+  }, [transactions]);
+
+  const totals = useMemo(() => {
+    return prepared.reduce(
+      (acc, d) => {
+        acc.income += d.income || 0;
+        acc.expense += d.expense || 0;
+        return acc;
+      },
+      { income: 0, expense: 0 }
+    );
+  }, [prepared]);
+
+  const pieData = [
+    { name: "Income", value: totals.income },
+    { name: "Expense", value: totals.expense }
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Bar: Income vs Expense */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Daily Income vs Expense</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={prepared} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="income" name="Income" fill={colors.income} />
+                <Bar dataKey="expense" name="Expense" fill={colors.expense} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Line: Running Balance */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Running Balance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={prepared} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="balance" stroke={colors.net} strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Area: Income/Expense trends */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Income / Expense Trend (Area)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={prepared} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dateLabel" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Area type="monotone" dataKey="income" name="Income" stroke={colors.income} fill={colors.income} fillOpacity={0.15} />
+                <Area type="monotone" dataKey="expense" name="Expense" stroke={colors.expense} fill={colors.expense} fillOpacity={0.10} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pie: distribution */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Income vs Expense (Share)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64 flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={56}
+                  outerRadius={84}
+                  label
+                >
+                  {pieData.map((entry, i) => <Cell key={`cell-${i}`} fill={i === 0 ? colors.income : colors.expense} />)}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
