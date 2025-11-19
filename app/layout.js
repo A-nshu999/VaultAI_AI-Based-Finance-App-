@@ -14,23 +14,27 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          {/* Header */}
+          <Header />
 
-  
-    <html lang="en">
-      <body className={`${inter.className}`}>
-        {/*header*/}
-        <Header/>
-        <main className="min-h-screen">{children}</main>
-        <Toaster richColors/>
-        {/*footer*/}
-        <footer className="bg-green-100 py-12">
-  <div className="container mx-auto px-4 text-center text-gray-600">
-    <p>© 2025 Vault AI. All rights reserved.</p>
-    <p className="text-xs text-gray-400 mt-2"><i>Made by Divyanshu and Divyansh </i></p>
-  </div>
-</footer>
-      </body>
-    </html>
-  </ClerkProvider>
+          <main className="min-h-screen">{children}</main>
+
+          {/* Toaster Notifications */}
+          <Toaster richColors />
+
+          {/* Footer */}
+          <footer className="bg-green-100 py-12">
+            <div className="container mx-auto px-4 text-center text-gray-600">
+              <p>© 2025 Vault AI. All rights reserved.</p>
+              <p className="text-xs text-gray-400 mt-2">
+                <i>Made by Divyanshu and Divyansh</i>
+              </p>
+            </div>
+          </footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

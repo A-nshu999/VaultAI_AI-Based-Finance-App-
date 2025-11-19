@@ -25,12 +25,12 @@ const Header = async () => {
         {/* Navigation Links - Different for signed in/out users */}
         <div className="hidden md:flex items-center space-x-8">
           <SignedOut>
-            <a href="#features" className="text-gray-600 hover:text-green-600">
+            <a href="#features" className="text-gray-600 hover:text-green-600 hover-glow-green transition-shadow duration-300">
               Features
             </a>
             <a
               href="#testimonials"
-              className="text-gray-600 hover:text-green-600"
+              className="text-gray-600 hover:text-green-600 hover-glow-green transition-shadow duration-300"
             >
               Testimonials
             </a>
@@ -42,15 +42,15 @@ const Header = async () => {
           <SignedIn>
             <Link
               href="/dashboard"
-              className="text-gray-600 hover:text-green-600 flex items-center gap-2"
+              className="text-gray-600 hover:text-green-600 flex items-center gap-2 transition-shadow duration-300 hover-glow-green"
             >
-              <Button variant="outline">
+              <Button variant="outline" className="transition-shadow duration-300 hover-glow-green">
                 <LayoutDashboard size={18} />
                 <span className="hidden md:inline">Dashboard</span>
               </Button>
             </Link>
             <a href="/transaction/create">
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 transition-shadow duration-300 hover-glow-green">
                 <PenBox size={18} />
                 <span className="hidden md:inline">Add Transaction</span>
               </Button>

@@ -105,6 +105,34 @@
   .gradient-title {
     @apply gradient font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text;
   }
+
+  .animate-fade-in {
+    animation: fadeIn 1.5s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 1.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero-image-wrapper {
@@ -113,7 +141,7 @@
 
 .hero-image {
   transform: rotateX(15deg) scale(1);
-  transition: transform 0.5s ease-out; /*this helps us to tell browser on which property we are adding transition*/
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* smoother transition */
   will-change: transform;
 }
 

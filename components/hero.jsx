@@ -31,21 +31,21 @@ const HeroSection = () => {
   return ( 
   <div className="pb-20 px-4">
     <div className="container mx-auto text-center">
-        <h1 className="text-4xl and md:text-6xl lg:text-[105px] pb-6 gradient-title">
+        <h1 className="text-4xl and md:text-5xl lg:text-[105px] pb-6 gradient-title animate-fade-in">
             Manage Your Finances <br /> with Intelligence
         </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slide-up">
            An AI-powered financial management platform that helps you track,
-           analyze, and optimize your spending with real-time insights.            
+           analyze, and optimize your spending with real-time insights.
         </p>
         <div className="flex justify-center space-x-4 mb-8">
             <Link href="/dashboard">
-            <Button size="lg" className="px-8">
+            <Button size="lg" className="px-8 transition-shadow duration-300 hover-glow-green">
                 Get Started
             </Button>
             </Link>
             <Link href="https://youtu.be/jWfNlCxjLoI?si=b09asOG5mt7L3nsO" target="_blank">
-            <Button size="lg" variant="outline" className="px-8">
+            <Button size="lg" variant="outline" className="px-8 transition-shadow duration-300 hover-glow-green">
                 Watch Demo
             </Button>
             </Link>
