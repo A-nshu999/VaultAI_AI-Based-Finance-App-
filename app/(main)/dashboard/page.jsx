@@ -6,21 +6,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import React from "react";
 import AccountCard from "./_components/account-card";
-import { getCurrentBudget } from "@/actions/budget"; // ✅ fixed import
+import { getCurrentBudget } from "@/actions/budget";
 import BudgetProgress from "./_components/budget-progress";
 
 export default async function DashboardPage() {
   const accounts = await getUserAccounts();
 
-  const defaultAccount = accounts?.find((account) => account.isDefault); // ✅ fixed typo (was isDeafault)
-  let budgetData = null;
+  const defaultAccount = accounts?.find((account) => account.isDefault);
 
+  let budgetData = null;
   if (defaultAccount) {
-    budgetData = await getCurrentBudget(defaultAccount.id); // ✅ updated to match import
+    budgetData = await getCurrentBudget(defaultAccount.id);
   }
 
   return (
-    <div className="space-y-8">
+    <div className="px-5 space-y-8">
+      
       {/* Budget Progress */}
       {defaultAccount && (
         <BudgetProgress
@@ -35,7 +36,9 @@ export default async function DashboardPage() {
           <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200 border-dashed">
             <CardContent className="flex flex-col items-center justify-center text-muted-foreground h-full pt-5">
               <Plus className="h-6 w-6 text-black" />
-              <p className="text-sm font-medium text-gray-800">Add New Account</p>
+              <p className="text-sm font-medium text-gray-800">
+                Add New Account
+              </p>
             </CardContent>
           </Card>
         </CreateAccountDrawer>

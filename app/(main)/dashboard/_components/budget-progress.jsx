@@ -22,13 +22,7 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     initialBudget?.amount?.toString() || ""
   );
 
-  const {
-    loading: isLoading,
-    fn: updateBudgetFn,
-    data: updateBudgetData,
-    error,
-  } = useFetch(updateBudget);
-
+  const { loading, fn: updateBudgetFn, data, error } = useFetch(updateBudget);
   const router = useRouter();
 
   const percentUsed = initialBudget
@@ -50,96 +44,72 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
   };
 
   useEffect(() => {
-    if (updateBudgetData?.success) {
-      setIsEditing(false);
+    if (data?.success) {
       toast.success("Budget updated successfully 🎉");
-      
-      // Small delay to ensure server-side revalidation completes
-      setTimeout(() => {
-        router.refresh();
-      }, 500);
+      setIsEditing(false);
+      router.refresh();
     }
-  }, [updateBudgetData, router]);
+  }, [data, router]);
 
   useEffect(() => {
-    if (error) {
-      toast.error(error.message || "Failed to update budget");
-    }
+    if (error) toast.error(error.message || "Failed to update budget");
   }, [error]);
 
-  // 🟩 Dynamic color for progress bar
   const progressColor =
     percentUsed >= 90
-      ? "bg-gradient-to-r from-red-500 to-red-400"
+      ? "bg-red-500"
       : percentUsed >= 75
-      ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
-      : "bg-gradient-to-r from-emerald-500 to-green-400";
+      ? "bg-yellow-500"
+      : "bg-green-500";
 
   return (
-    <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 rounded-2xl bg-gradient-to-br from-white to-gray-50">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
-        <div className="flex-1 space-y-1">
-          <CardTitle className="text-lg font-semibold text-gray-800">
-            Monthly Budget{" "}
-            <span className="text-gray-500 font-normal">(Default Account)</span>
+    <Card className="shadow-md rounded-xl p-2">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <div className="flex-1">
+          <CardTitle className="text-base font-semibold">
+            Monthly Budget (Default Account)
           </CardTitle>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-1">
             {isEditing ? (
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
                   value={newBudget}
                   onChange={(e) => setNewBudget(e.target.value)}
-                  className="w-32 border-gray-300 focus-visible:ring-emerald-400"
+                  className="w-32"
                   placeholder="Enter amount"
                   autoFocus
-                  disabled={isLoading}
+                  disabled={loading}
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleUpdateBudget}
-                  disabled={isLoading}
-                  className="hover:bg-green-50"
-                >
-                  <Check className="h-4 w-4 text-green-600" />
+
+                <Button variant="ghost" size="icon" onClick={handleUpdateBudget}>
+                  <Check className="h-5 w-5 text-green-500" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                  className="hover:bg-red-50"
-                >
-                  <X className="h-4 w-4 text-red-500" />
+
+                <Button variant="ghost" size="icon" onClick={handleCancel}>
+                  <X className="h-5 w-5 text-red-500" />
                 </Button>
               </div>
             ) : (
               <>
-                <CardDescription className="text-sm text-gray-600 flex items-center gap-2">
+                <CardDescription>
                   {initialBudget ? (
                     <>
-                      <span className="font-medium text-gray-800">
-                        ${currentExpenses.toFixed(2)}
-                      </span>
-                      <span className="text-gray-400">used of</span>
-                      <span className="font-medium text-gray-800">
-                        ${initialBudget.amount.toFixed(2)}
-                      </span>
-                      <span className="text-gray-500">budget</span>
+                      ${currentExpenses.toFixed(2)} used of $
+                      {initialBudget.amount.toFixed(2)}
                     </>
                   ) : (
                     "No budget set"
                   )}
                 </CardDescription>
+
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsEditing(true)}
-                  className="ml-1 h-6 w-6 hover:bg-gray-100"
                 >
-                  <Pencil className="h-4 w-4 text-gray-500 hover:text-gray-800" />
+                  <Pencil className="h-4 w-4" />
                 </Button>
               </>
             )}
@@ -149,23 +119,15 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
 
       {initialBudget && (
         <CardContent>
-          <div className="space-y-2 mt-2">
-            <div className="relative w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-              <div
-                className={`h-2 rounded-full transition-all duration-700 ease-out ${progressColor}`}
-                style={{ width: `${Math.min(percentUsed, 100)}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-gray-500 font-medium">
-              <span>{percentUsed.toFixed(1)}% used</span>
-              <span>
-                Remaining: $
-                {(
-                  initialBudget.amount -
-                  Math.min(currentExpenses, initialBudget.amount)
-                ).toFixed(2)}
-              </span>
-            </div>
+          <div className="space-y-2">
+            <Progress
+              value={percentUsed}
+              extraStyles={progressColor}
+            />
+
+            <p className="text-xs text-right text-gray-500">
+              {percentUsed.toFixed(1)}% used
+            </p>
           </div>
         </CardContent>
       )}
